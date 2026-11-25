@@ -1,0 +1,457 @@
+@import "tailwindcss";
+
+/* Theme is set by an inline script as data-theme on <html> (see layout.tsx). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * Quiet greys and white, one ink-blue accent. Colour is kept for meaning:
+ * good (green), careful (amber), bad (red), each also differing in lightness.
+ */
+:root {
+  color-scheme: light;
+  --background: #f4f5f7;
+  --foreground: #14161b;
+  --surface: #ffffff;
+  --faint: #eceef2;
+  --muted: #5b6272;
+  --line: #e3e6eb;
+  --accent: #3651d4;
+  --accent-2: #0e7490;
+  --good: #17794a;
+  --good-dot: #2fb872;
+  --good-soft: #e6f6ee;
+  --caution: #985a05;
+  --caution-dot: #efa43a;
+  --caution-soft: #fdf3e4;
+  --poor: #b4382c;
+  --poor-dot: #e5675a;
+  --bar: #b9c4e8;
+  --bar-past: #e3e6eb;
+  --glow-from: #3651d4;
+  --glow-to: #6b7fe6;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Fallback before the script runs, or with JavaScript off. */
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --background: #0f1115;
+    --foreground: #eceef2;
+    --surface: #171a21;
+    --faint: #1e222b;
+    --muted: #98a0b0;
+    --line: #262b35;
+    --accent: #9db0ff;
+    --accent-2: #67d0e4;
+    --good: #6fd39b;
+    --good-dot: #3fc07e;
+    --good-soft: #16281f;
+    --caution: #f2b866;
+    --caution-dot: #efa43a;
+    --caution-soft: #2e2618;
+    --poor: #f08a7e;
+    --poor-dot: #e5675a;
+    --bar: #3b4767;
+    --bar-past: #252a34;
+    --glow-from: #9db0ff;
+    --glow-to: #c3ceff;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0f1115;
+  --foreground: #eceef2;
+  --surface: #171a21;
+  --faint: #1e222b;
+  --muted: #98a0b0;
+  --line: #262b35;
+  --accent: #9db0ff;
+  --accent-2: #67d0e4;
+  --good: #6fd39b;
+  --good-dot: #3fc07e;
+  --good-soft: #16281f;
+  --caution: #f2b866;
+  --caution-dot: #efa43a;
+  --caution-soft: #2e2618;
+  --poor: #f08a7e;
+  --poor-dot: #e5675a;
+  --bar: #3b4767;
+  --bar-past: #252a34;
+  --glow-from: #9db0ff;
+  --glow-to: #c3ceff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-faint: var(--faint);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-good: var(--good);
+  --color-good-dot: var(--good-dot);
+  --color-good-soft: var(--good-soft);
+  --color-caution: var(--caution);
+  --color-caution-dot: var(--caution-dot);
+  --color-caution-soft: var(--caution-soft);
+  --color-poor: var(--poor);
+  --color-poor-dot: var(--poor-dot);
+  --color-bar: var(--bar);
+  --color-bar-past: var(--bar-past);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-feature-settings: "tnum" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Live numbers: tabular so they don't jump as they change. */
+.readout {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+/* A card: white (or raised dark) surface, hairline border, soft corners. */
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+}
+a.panel {
+  transition: border-color 0.15s;
+}
+a.panel:hover,
+a.panel:focus-visible {
+  border-color: color-mix(in srgb, var(--foreground) 28%, var(--line));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Colour memory: range inputs whose track is the colour gradient itself. */
+.colour-slider {
+  appearance: none;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+  cursor: pointer;
+}
+.colour-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.colour-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.875rem;
+  height: 2.75rem;
+  border-radius: 0.375rem;
+  background: #fff;
+  border: 2px solid #1c1917;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+.colour-slider::-moz-range-thumb {
+  width: 0.875rem;
+  height: 2.75rem;
+  border-radius: 0.375rem;
+  background: #fff;
+  border: 2px solid #1c1917;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+}
+
+/* Time slider on Tonight's sky */
+.sky-slider {
+  appearance: none;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: linear-gradient(to right, #334e7a, #05081a 30%, #05081a 70%, #334e7a);
+  cursor: pointer;
+}
+.sky-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.sky-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: #fef9c3;
+  border: 2px solid #1c1917;
+}
+.sky-slider::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: #fef9c3;
+  border: 2px solid #1c1917;
+}
+
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* Zorp, the jet saucer (src/components/Robot.tsx) */
+.saucer * {
+  transform-box: fill-box;
+}
+.saucer-float {
+  animation: saucer-float 2.6s ease-in-out infinite;
+}
+.saucer-body {
+  transform-origin: center;
+  transition: transform 0.25s ease-out;
+}
+.saucer-gaze {
+  transition: transform 0.2s ease-out;
+}
+.saucer-eyes {
+  transform-origin: center;
+  animation: saucer-blink 5s infinite;
+}
+.saucer-flame {
+  transform-origin: top center;
+  animation: saucer-flame 0.3s ease-in-out infinite alternate;
+  transition: opacity 0.3s;
+}
+.saucer-lights circle {
+  animation: saucer-light 1.2s ease-in-out infinite;
+}
+.saucer-lights circle:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.saucer-lights circle:nth-child(3) {
+  animation-delay: 0.8s;
+}
+.saucer-beam {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.saucer-zzz {
+  opacity: 0;
+}
+
+/* Flying: bigger jets. */
+.saucer.is-moving .saucer-flame {
+  animation: saucer-boost 0.12s ease-in-out infinite alternate;
+}
+/* Idle moves */
+.saucer.is-look .saucer-look {
+  animation: saucer-look 3s ease-in-out;
+}
+.saucer.is-beam .saucer-beam {
+  opacity: 0.3;
+  animation: saucer-beam 0.8s ease-in-out infinite alternate;
+}
+.saucer.is-beam .saucer-gaze {
+  transform: translate(0, 1.2px) !important;
+}
+.saucer.is-lights .saucer-lights circle {
+  animation-duration: 0.35s;
+}
+.saucer.is-wobble .saucer-float {
+  animation: saucer-wobble 1.8s ease-in-out;
+}
+/* Asleep: eyes shut, jets low, lights dim, sinking a little. */
+.saucer.is-asleep .saucer-eyes {
+  animation: none;
+  transform: scaleY(0.15);
+}
+.saucer.is-asleep .saucer-flame {
+  animation: none;
+  opacity: 0.25;
+  transform: scaleY(0.4);
+}
+.saucer.is-asleep .saucer-lights circle {
+  animation: none;
+  opacity: 0.25;
+}
+.saucer.is-asleep .saucer-float {
+  animation: saucer-doze 4s ease-in-out infinite;
+}
+.saucer.is-asleep .saucer-zzz {
+  opacity: 1;
+}
+.saucer.is-asleep .saucer-zzz text {
+  animation: saucer-z 3s ease-out infinite;
+}
+.saucer.is-asleep .saucer-zzz text:nth-child(2) {
+  animation-delay: 1s;
+}
+.saucer.is-asleep .saucer-zzz text:nth-child(3) {
+  animation-delay: 2s;
+}
+
+/* Night: running lights on steady and glowing, a pool of light below. */
+.saucer-glow {
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.saucer.is-night .saucer-glow {
+  opacity: 0.25;
+}
+.saucer.is-night .saucer-lights circle {
+  animation: none;
+  opacity: 1;
+  filter: drop-shadow(0 0 1.5px #fbbf24);
+}
+.saucer.is-night.is-lights .saucer-lights circle {
+  animation: saucer-light 0.35s ease-in-out infinite;
+}
+.saucer.is-night.is-asleep .saucer-glow,
+.saucer.is-night.is-asleep .saucer-lights circle {
+  opacity: 0.3;
+  filter: none;
+}
+/* Rain: drops falling past it. */
+.saucer-rain line {
+  animation: saucer-drop 0.9s linear infinite;
+}
+.saucer-rain line:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.saucer-rain line:nth-child(3) {
+  animation-delay: 0.55s;
+}
+.saucer-rain line:nth-child(4) {
+  animation-delay: 0.75s;
+}
+
+@keyframes saucer-drop {
+  from {
+    opacity: 0;
+    transform: translate(0, -4px);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-3px, 14px);
+  }
+}
+@keyframes saucer-float {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes saucer-doze {
+  0%,
+  100% {
+    transform: translateY(2px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(3px) rotate(3deg);
+  }
+}
+@keyframes saucer-wobble {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-12deg) translateY(-2px);
+  }
+  45% {
+    transform: rotate(10deg) translateY(-4px);
+  }
+  70% {
+    transform: rotate(-5deg);
+  }
+}
+@keyframes saucer-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  97% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes saucer-look {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  40% {
+    transform: translateX(-2.5px);
+  }
+  60%,
+  80% {
+    transform: translateX(2.5px);
+  }
+}
+@keyframes saucer-flame {
+  to {
+    transform: scaleY(0.6);
+  }
+}
+@keyframes saucer-boost {
+  from {
+    transform: scaleY(1.4);
+  }
+  to {
+    transform: scaleY(1.9);
+  }
+}
+@keyframes saucer-light {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes saucer-beam {
+  to {
+    opacity: 0.12;
+  }
+}
+@keyframes saucer-z {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(4px, -8px);
+  }
+}
+@keyframes robot-hop {
+  40% {
+    transform: translateY(-10px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .saucer *,
+  .saucer.is-asleep .saucer-zzz text {
+    animation: none !important;
+    transition: none !important;
+  }
+}
