@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
 
 # ---- Dependencies ----------------------------------------------------------
-FROM node:24-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
 # ---- Build -----------------------------------------------------------------
-FROM node:24-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # ---- Run -------------------------------------------------------------------
-FROM node:24-bookworm-slim AS run
+FROM node:26-bookworm-slim AS run
 WORKDIR /app
 
 # Chromium renders the two shops that need JavaScript (Vanden Borre, and Amazon as a fallback).
