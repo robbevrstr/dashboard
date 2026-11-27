@@ -54,7 +54,7 @@ Back it up with:
 docker compose cp dashboard:/data ./backup
 ```
 
-There is no separate database server: SQLite is built into Node 24 (`node:sqlite`) and is plenty for one person. The light/dark choice stays in the browser so the page can pick the right colours before it draws.
+There is no separate database server: SQLite is built into Node (`node:sqlite`) and is plenty for one person. The light/dark choice stays in the browser so the page can pick the right colours before it draws.
 
 ### Configuration
 
@@ -79,7 +79,7 @@ Other protections: a strict Content-Security-Policy, the data APIs only accept J
 
 ## Develop without Docker
 
-Requires Node 24 and, for two of the comparer's shops, Chrome or Chromium installed locally (set `CHROME_PATH` if it isn't in the default location).
+Requires Node 24 or newer (the Docker image uses Node 26) and, for two of the comparer's shops, Chrome or Chromium installed locally (set `CHROME_PATH` if it isn't in the default location).
 
 ```bash
 npm install
