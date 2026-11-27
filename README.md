@@ -2,7 +2,9 @@
 
 A personal dashboard that runs on your own machine. One page shows your agenda and to-do list, and tells you what you'd otherwise look up in five places: is it a good moment to go out, will the sky be clear tonight, what electricity costs right now, today's fuel prices, and whether anything on your watchlist got cheaper. Each tile opens a full tool, and there are a few small games and a flying-saucer companion called Zorp.
 
-It's built for Belgium (Belgian shops, Belgian fuel and electricity prices, Belgian cities), but the weather and sky tools work anywhere.
+Everything is based on Belgium for now: the price comparer searches Belgian shops, fuel and electricity prices are the Belgian ones, the place picker lists Belgian cities (Brussels by default) and the server runs on Brussels time. The weather and sky tools work anywhere.
+
+This is a personal project. Feel free to fork it and make it your own, for example with your own country's shops, prices and places. I don't take pull requests, but feature requests are welcome: [open an issue](https://github.com/robbevrstr/dashboard/issues/new) and tell me what you'd like to see.
 
 ## What's in it
 
