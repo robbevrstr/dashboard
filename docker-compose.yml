@@ -1,0 +1,25 @@
+services:
+  dashboard:
+    build: .
+    image: dashboard:latest
+    container_name: dashboard
+    restart: unless-stopped
+    init: true
+    ports:
+      # Only reachable from this computer. Use "3000:3000" to open it to your network,
+      # but note the dashboard has no login.
+      - "127.0.0.1:3000:3000"
+    volumes:
+      # The SQLite database (settings, saved items, price history) and the cached ISS orbit.
+      - dashboard-data:/data
+    environment:
+      TZ: Europe/Brussels
+      # Chromium's own sandbox needs user namespaces, which Docker's default security profile
+      # blocks. The container is the boundary instead, and the comparer still refuses to let
+      # Chromium reach this machine or your local network.
+      CHROME_SANDBOX: "false"
+    # Chromium needs more shared memory than Docker's 64 MB default.
+    shm_size: 256mb
+
+volumes:
+  dashboard-data:
