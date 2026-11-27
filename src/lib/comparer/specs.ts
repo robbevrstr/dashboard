@@ -25,23 +25,42 @@ export function matchesQuery(title: string, query: string) {
 // Matched inside words too, so "beschermhoes", "telefoonhoesje" and
 // "lensbescherming" are all caught.
 const ACCESSORY =
-  /(hoes|case|cover|protector|bescherm|tempered|glas|folie|lader|charger|kabel|cable|adapter|houder|holder|mount|strap|bandje|skin|sticker|pouch|sleeve|etui|coque|stylus|wallet|bumper|portemonnee|lanyard|koord|kussen|cushion|earpad|reparatie|repair|vervang|replacement|onderdeel|spare|hoofdband)/;
+  /(hoes|case|cover|protector|screensaver|bescherm|tempered|gehard|glas|folie|lader|charger|kabel|cable|adapter|houder|holder|mount|strap|bandje|skin|sticker|pouch|sleeve|etui|coque|stylus|wallet|bumper|portemonnee|lanyard|koord|kussen|cushion|earpad|reparatie|repair|vervang|replacement|onderdeel|spare|hoofdband|dock)/;
+
+/** Words that say a listing is made to fit another product, when they come before its name. */
+const FITS = /\b(voor|for|pour|fur|compatible|compatibel)\b/;
 
 /**
  * True for things *for* the product rather than the product itself
  * ("Hoesje geschikt voor iPhone 16"). An accessory added with "+" or "met"
- * ("Sony WH-1000XM5 + oplader") is a bundle and still counts as the product.
+ * ("Sony WH-1000XM5 + oplader") is a bundle and still counts as the product,
+ * but only when the part before it is the product: in "BlueSwan met beschermhoes
+ * voor MacBook Pro" the product is only named after the "met".
  */
 export function isAccessory(title: string, query: string) {
   if (ACCESSORY.test(normalize(query))) return false;
-  const main = title.split(/\s\+\s|\s(?:met|incl\.?|inclusief|with|avec)\s/i)[0];
-  const t = normalize(main);
-  if (/\b(geschikt voor|compatible|compatibel|voor apple|for apple|pour)\b/.test(t)) return true;
-  // "Oorkussens voor Sony WH-1000XM5": something *for* the product.
-  const first = tokens(query)[0];
-  const at = first ? ` ${t} `.indexOf(` ${first} `) : -1;
-  if (at > 0 && /\b(voor|for|pour|fur)\b/.test(t.slice(0, at))) return true;
+  const full = normalize(title);
+  const qt = tokens(query);
+  // "Oorkussens voor Sony WH-1000XM5", "… Geschikt voor Google Pixel 10a": something *for* the
+  // product. Only before its name: "MacBook Pro … ontworpen voor Apple Intelligence" is the product.
+  const at = qt[0] ? ` ${full} `.indexOf(` ${qt[0]} `) : -1;
+  if (at > 0 && FITS.test(full.slice(0, at))) return true;
+  const head = normalize(title.split(/\s\+\s|\s(?:met|incl\.?|inclusief|with|avec)\s/i)[0]);
+  const t = qt.length && qt.every((tok) => ` ${head} `.includes(` ${tok} `)) ? head : full;
   return ACCESSORY.test(t);
+}
+
+/**
+ * Listings priced far below what the actual product costs are accessories that slipped
+ * past the words above ("DockedByDesign SlideUnder Pro … MacBook Pro 14"). Compares with
+ * the median of the listings still counted as the product; needs a few to be meaningful.
+ */
+export function cheapOutliers<T extends { price: number; accessory: boolean }>(offers: T[], query: string, ratio = 0.3) {
+  if (ACCESSORY.test(normalize(query))) return;
+  const prices = offers.filter((o) => !o.accessory).map((o) => o.price).sort((a, b) => a - b);
+  if (prices.length < 4) return;
+  const median = prices[Math.floor(prices.length / 2)];
+  for (const o of offers) if (!o.accessory && o.price < median * ratio) o.accessory = true;
 }
 
 const COLORS: [string, RegExp][] = [

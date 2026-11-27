@@ -1,7 +1,7 @@
 import { getHistory, headline, recordPoint } from "./history";
 import { BlockedError } from "./html";
 import { adapters } from "./retailers";
-import { extractSpecs, isAccessory, isRefurbished, matchesQuery } from "./specs";
+import { cheapOutliers, extractSpecs, isAccessory, isRefurbished, matchesQuery } from "./specs";
 import { IMAGE_HOSTS, RETAILERS, type Offer, type RetailerId, type RetailerStatus, type SearchResponse } from "./types";
 
 // Links and images come from scraped HTML, so only https URLs survive, and
@@ -103,6 +103,7 @@ async function scrape(query: string, key: string): Promise<SearchResponse> {
     retailers.push({ retailer, status: count ? "ok" : "empty", count });
   });
 
+  cheapOutliers(offers, query);
   offers.sort((a, b) => a.price - b.price);
 
   // Only trust a price point when most shops answered; otherwise a missing shop
