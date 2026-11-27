@@ -71,13 +71,19 @@ export function decodeEntities(s: string) {
   });
 }
 
+/**
+ * The visible text of an HTML fragment. Comments and tags are removed until none are left (a single
+ * pass could leave a new one behind, e.g. "<!<!--x-->--"), and stray angle brackets are dropped, so
+ * the result never contains markup. Entities are decoded last; the result is shown as text only.
+ */
 export function text(html: string) {
-  return decodeEntities(
-    html
-      .replace(/<!--[\s\S]*?-->/g, "")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " "),
-  ).trim();
+  let s = html;
+  let previous;
+  do {
+    previous = s;
+    s = s.replace(/<!--[\s\S]*?(?:-->|$)/g, "").replace(/<[^<>]*>/g, " ");
+  } while (s !== previous);
+  return decodeEntities(s.replace(/[<>]/g, " ").replace(/\s+/g, " ")).replace(/\s+/g, " ").trim();
 }
 
 /** Parses "€ 1.299,99", "1.299,-", "949", "1299.00" into a number. */
