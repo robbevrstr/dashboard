@@ -7,6 +7,13 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      # typescript-eslint (used by eslint-config-next) doesn't support TypeScript 7 yet.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      # satellite.js 6+ makes the production build hang; 5 computes the same ISS passes.
+      - dependency-name: satellite.js
+        update-types: [version-update:semver-major]
     groups:
       # Minor and patch updates together in one PR instead of one per package.
       npm-minor:
