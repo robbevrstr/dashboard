@@ -15,7 +15,7 @@
     "playwright-core": "^1.65.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "satellite.js": "^5.0.0"
+    "satellite.js": "^7.2.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",
